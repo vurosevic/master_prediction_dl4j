@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Leiningen: com.typesafe.akka/akka-actor_2.11:2.3.16">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/typesafe/akka/akka-actor_2.11/2.3.16/akka-actor_2.11-2.3.16.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

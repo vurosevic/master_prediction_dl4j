@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Leiningen: org.threadly/threadly:4.10.0">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/threadly/threadly/4.10.0/threadly-4.10.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Leiningen: org.agrona/Agrona:0.5.4">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/agrona/Agrona/0.5.4/Agrona-0.5.4.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
