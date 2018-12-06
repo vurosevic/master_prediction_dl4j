@@ -27,7 +27,7 @@
 (def input-num 64)
 (def output-num 1)
 (def batch-size 128)
-(def num-epochs 30)
+(def num-epochs 10)
 (def rng-seed 123)
 
 (set! NeuralNet/momentum 0.9)
@@ -48,38 +48,44 @@
      (println (.stats eval))
      )))
 
+(defn absulute-p-error [v]
+  (let [f (first v)
+        s (second v)
+        o (- f s)]
+    (* 100 (Math/abs (double (/ o s))))))
+
 (defn test-net-predict
-  ([net normalizer test-data test-iterator]
+  ([net normalizer test-data]
    (let [test-copy (.copy test-data)
+         test-iterator (ListDataSetIterator. (.asList test-data))
          predicted (.output net test-iterator)
          - (.revertLabels normalizer predicted)
          - (.revertLabels normalizer (.getLabels test-copy))
          pod2 (map #(double %) (.getLabels test-copy))
          pred1 (map #(double %) predicted)
+         pom1 (vec (map #(vector %1 %2) pred1 pod2))
          ev (Evaluation. ) ]
 
      (println "Predicted ...")
-     (map #(vector %1 %2) pred1 pod2)
-     ;;(.eval ev (.getLabels test-data))
-     )))
 
-(defn train-network []
-  (let [- (.reset data/all-data-reader)
-        allData-iterator (RecordReaderDataSetIterator.
-                           data/all-data-reader 2647 64 64 true)
-        allData        (DataSet.)
-        allData        (.next allData-iterator)
-        testAndTrain   (.splitTestAndTrain allData 0.7)
-        train-data     (.getTrain testAndTrain)
-        train-data-itr (ListDataSetIterator. (.asList train-data))
-        test-data      (.getTest testAndTrain)
+
+     (let [ape (map #(absulute-p-error %) pom1)
+           uku (count ape)
+           sumape (apply + (map double ape))]
+       (/ sumape uku)
+       )
+
+     ;;(map #(reduce - %) (vec (map #(vector %1 %2) pred1 pod2)))
+
+     ;; (map #(* 100 (Math/abs (/ %1 %2))) (map #(reduce - %) (vec (map #(vector %1 %2) pred1 pod2))) pod2)
+
+     ;;(.eval ev (.getLabels test-data))
+    )))
+
+(defn train-network [net train-data test-data normalizer]
+  (let [train-data-itr (ListDataSetIterator. (.asList train-data))
         test-copy      (.copy test-data)
         test-data-itr (ListDataSetIterator. (.asList test-data))
-        normalizer     (NormalizerMinMaxScaler. 0 1)
-        -              (.fitLabel normalizer true)
-        -              (.fit normalizer train-data)
-        -              (.transform normalizer train-data)
-        -              (.transform normalizer test-data)
         ready-for-more true]
     (println "Initializing net...")
     (.init net)
@@ -91,7 +97,11 @@
     (doseq [n (range 0 num-epochs)]
       (.reset train-data-itr)
       (println "test-iterator reset")
-      (.fit net train-data-itr))
+      (.fit net train-data-itr)
+
+      (println (test-net-predict net normalizer test-data))
+      )
+
     (println "Trained net")
 
     (ModelSerializer/writeModel
@@ -99,9 +109,11 @@
       )
     (println "Saved net")
 
-    (.reset test-data-itr)
-    (test-net-predict net normalizer test-data test-data-itr)
+    (test-net-predict net normalizer test-data)
     ))
 
-(train-network)
-;;(map #(reduce + %) [[1 2] [2 3] [3 4]])
+(train-network net data/train-data data/test-data data/normalizer)
+
+(absulute-p-error [20 15])
+
+
