@@ -75,12 +75,20 @@
        (/ sumape uku)
        )
 
-     ;;(map #(reduce - %) (vec (map #(vector %1 %2) pred1 pod2)))
-
-     ;; (map #(* 100 (Math/abs (/ %1 %2))) (map #(reduce - %) (vec (map #(vector %1 %2) pred1 pod2))) pod2)
-
-     ;;(.eval ev (.getLabels test-data))
     )))
+
+(defn net-predict
+  ([net normalizer test-data]
+   (let [test-iterator (ListDataSetIterator. (.asList test-data))
+         predicted (.output net test-iterator)
+         - (.revertLabels normalizer predicted)
+         pred1 (map #(double %) predicted)]
+
+     (println "Predicted ...")
+      (-> pred1)
+     )))
+
+
 
 (defn train-network [net train-data test-data normalizer]
   (let [train-data-itr (ListDataSetIterator. (.asList train-data))
@@ -111,6 +119,8 @@
 
     (test-net-predict net normalizer test-data)
     ))
+
+(net-predict net data/normalizer data/test-ds)
 
 (train-network net data/train-data data/test-data data/normalizer)
 
