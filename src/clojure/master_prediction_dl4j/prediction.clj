@@ -54,7 +54,7 @@
         o (- f s)]
     (* 100 (Math/abs (double (/ o s))))))
 
-(defn test-net-predict
+(defn evaluate-mape
   ([net normalizer test-data]
    (let [test-copy (.copy test-data)
          test-iterator (ListDataSetIterator. (.asList test-data))
@@ -66,15 +66,12 @@
          pom1 (vec (map #(vector %1 %2) pred1 pod2))
          ev (Evaluation. ) ]
 
-     (println "Predicted ...")
-
+     (println "MAPE")
 
      (let [ape (map #(absulute-p-error %) pom1)
            uku (count ape)
            sumape (apply + (map double ape))]
-       (/ sumape uku)
-       )
-
+       (/ sumape uku))
     )))
 
 (defn net-predict
@@ -88,42 +85,57 @@
       (-> pred1)
      )))
 
+(defn init-network
+  [net]
+  (println "Initializing net...")
+  (.init net)
+  (println "Initialized net")
 
+  (set-ui net)
+  (println "UI set")
+  )
 
 (defn train-network [net train-data test-data normalizer]
   (let [train-data-itr (ListDataSetIterator. (.asList train-data))
         test-copy      (.copy test-data)
         test-data-itr (ListDataSetIterator. (.asList test-data))
         ready-for-more true]
-    (println "Initializing net...")
-    (.init net)
-    (println "Initialized net")
-
-    (set-ui net)
-    (println "UI set")
 
     (doseq [n (range 0 num-epochs)]
       (.reset train-data-itr)
       (println "test-iterator reset")
       (.fit net train-data-itr)
-
-      (println (test-net-predict net normalizer test-data))
+      (println (evaluate-mape net normalizer test-data))
       )
 
     (println "Trained net")
 
-    (ModelSerializer/writeModel
-      net (java.io.File. "resources/net-8") ready-for-more
-      )
-    (println "Saved net")
-
-    (test-net-predict net normalizer test-data)
+    (evaluate-mape net normalizer test-data)
     ))
+
+(defn save-network
+  [net filename]
+  (ModelSerializer/writeModel
+    net (java.io.File. (str "resources/" filename)) true)
+  )
+
+(defn load-network
+  [filename]
+  (ModelSerializer/restoreMultiLayerNetwork (str "resources/" filename))
+  )
 
 (net-predict net data/normalizer data/test-ds)
 
+(save-network net "dl4j_nn122")
+
+(init-network net)
+(evaluate-mape net data/normalizer data/test-data)
 (train-network net data/train-data data/test-data data/normalizer)
 
-(absulute-p-error [20 15])
+(def net2 (load-network "dl4j_nn130"))
+(evaluate-mape net2 data/normalizer data/test-data)
+(train-network net2 data/train-data data/test-data data/normalizer)
+
+
 
 
