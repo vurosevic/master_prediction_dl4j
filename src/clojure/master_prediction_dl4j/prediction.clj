@@ -124,16 +124,17 @@
   (ModelSerializer/restoreMultiLayerNetwork (str "resources/" filename))
   )
 
-(net-predict net data/normalizer data/test-ds)
 
 (save-network net "dl4j_nn122")
 
 (init-network net)
 (evaluate-mape net data/normalizer data/test-data)
+(net-predict net data/normalizer (data/prepare-input-vector data/input-test data/normalizer))
 (train-network net data/train-data data/test-data data/normalizer)
 
-(def net2 (load-network "dl4j_nn130"))
+(def net2 (load-network "dl4j_nn140"))
 (evaluate-mape net2 data/normalizer data/test-data)
+(net-predict net2 data/normalizer (data/prepare-input-vector data/input-test data/normalizer))
 (train-network net2 data/train-data data/test-data data/normalizer)
 
 

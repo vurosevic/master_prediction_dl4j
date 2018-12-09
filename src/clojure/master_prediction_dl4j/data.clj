@@ -52,16 +52,26 @@
                  17 18.59090909 22 17.62029836 28.68181818 68 1002.318182])
 
 
-(defn vec->indarray
+(defn indarray
   [data]
   (Nd4j/create (double-array data)))
 
-(def test-row (vec->indarray input-test))
-(def test-rowo (vec->indarray [0]))
+(def test-row (indarray input-test))
+(def test-rowo (indarray [0]))
 
 (def test-ds (DataSet. test-row test-rowo))
-;;(.fit normalizer test-ds)
 (.transform normalizer test-ds)
 
+(defn prepare-input-vector
+  [input-vector normalizer]
+  (let [input-row (indarray input-test)
+        output-row (indarray [0])
+        output-ds (DataSet. input-row output-row)
+        - (.transform normalizer output-ds)]
+    output-ds
+    ))
+
 (-> test-ds)
+
+(prepare-input-vector input-test normalizer)
 
