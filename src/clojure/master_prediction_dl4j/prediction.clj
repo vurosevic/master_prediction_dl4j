@@ -24,15 +24,15 @@
            [org.nd4j.linalg.dataset.api.iterator DataSetIterator]
            [org.nd4j.linalg.dataset.api MultiDataSet]))
 
-(def input-num 64)
-(def output-num 1)
-(def batch-size 128)
-(def num-epochs 10)
-(def rng-seed 123)
+;;(def input-num 64)
+;;(def output-num 1)
+;;(def batch-size 128)
+;;(def num-epochs 10)
+;;(def rng-seed 123)
 
-(set! NeuralNet/momentum 0.9)
-(set! NeuralNet/learning_rate 1.5E-3)
-(def net (MultiLayerNetwork. (NeuralNet/getNetConfiguration)))
+;;(set! NeuralNet/momentum 0.9)
+;;(set! NeuralNet/learning_rate 1.5E-3)
+;;(def net (MultiLayerNetwork. (NeuralNet/getNetConfiguration)))
 
 (defn set-ui [net]
   (let [ui-server (UIServer/getInstance)
@@ -95,7 +95,7 @@
   (println "UI set")
   )
 
-(defn train-network [net train-data test-data normalizer]
+(defn train-network [net train-data test-data normalizer num-epochs]
   (let [train-data-itr (ListDataSetIterator. (.asList train-data))
         test-copy      (.copy test-data)
         test-data-itr (ListDataSetIterator. (.asList test-data))
