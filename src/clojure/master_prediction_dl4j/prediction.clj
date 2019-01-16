@@ -48,7 +48,7 @@
      (println (.stats eval))
      )))
 
-(defn absulute-p-error [v]
+(defn absulute-percent-error [v]
   (let [f (first v)
         s (second v)
         o (- f s)]
@@ -68,7 +68,7 @@
 
      (println "MAPE")
 
-     (let [ape (map #(absulute-p-error %) pom1)
+     (let [ape (map #(absulute-percent-error %) pom1)
            uku (count ape)
            sumape (apply + (map double ape))]
        (/ sumape uku))

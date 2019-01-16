@@ -24,25 +24,35 @@
 (let [all-data-reader (CSVRecordReader.)
       _ (.initialize all-data-reader (FileSplit.
                                        (-> (ClassPathResource. data-file-name)
-                                           (.getFile))
-                                       ))]
-  (def all-data-reader all-data-reader))
+                                           (.getFile))))
+      allData-iterator (RecordReaderDataSetIterator.
+                         all-data-reader 2647 64 64 true)
+      allData (DataSet.)
+      allData (.next allData-iterator)
+      testAndTrain (.splitTestAndTrain allData 0.7)]
+  (do
+    (def train-data (.getTrain testAndTrain))
+    (def test-data (.getTest testAndTrain)))
+  )
 
-(def allData-iterator (RecordReaderDataSetIterator.
-                        all-data-reader 2647 64 64 true))
-(def allData (DataSet.))
-(def allData (.next allData-iterator))
-(def testAndTrain (.splitTestAndTrain allData 0.7))
-(def train-data (.getTrain testAndTrain))
-(def test-data (.getTest testAndTrain))
+;;(def allData-iterator (RecordReaderDataSetIterator.
+;;                        all-data-reader 2647 64 64 true))
+
+;;(def allData (DataSet.))
+;;(def allData (.next allData-iterator))
+
+;;(def testAndTrain (.splitTestAndTrain allData 0.7))
+
+;;(def train-data (.getTrain testAndTrain))
+;;(def test-data (.getTest testAndTrain))
 (def normalizer (NormalizerMinMaxScaler. 0 1))
 (.fitLabel normalizer true)
 (.fit normalizer train-data)
 (.transform normalizer train-data)
 (.transform normalizer test-data)
 
-(-> allData)
-(-> test-data)
+;;(-> allData)
+;;(-> test-data)
 
 
 (def input-test [2010 9 25 7 0 3424 3060 2861 2772 2761 2971 3435 4015 4195 4261 4215

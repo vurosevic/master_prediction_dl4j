@@ -19,6 +19,8 @@
                  [org.nd4j/nd4j-common "1.0.0-beta2"]
                  [org.nd4j/nd4j-native-platform "1.0.0-beta2"]
                  [org.slf4j/slf4j-log4j12 "1.7.1"]
+                 [criterium/criterium "0.4.3"]
+                 [midje/midje "1.9.1"]
                  [log4j/log4j "1.2.17" :exclusions [javax.mail/mail
                                                     javax.jms/jms
                                                     com.sun.jmdk/jmxtools

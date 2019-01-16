@@ -12,7 +12,7 @@
 (prediction/init-network net)
 (prediction/evaluate-mape net data/normalizer data/test-data)
 (prediction/net-predict net data/normalizer (data/prepare-input-vector data/input-test data/normalizer))
-(prediction/train-network net data/train-data data/test-data data/normalizer 2)
+(prediction/train-network net data/train-data data/test-data data/normalizer 35)
 
 (prediction/save-network net "dl4j_nn122t")
 
