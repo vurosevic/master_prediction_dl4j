@@ -41,7 +41,7 @@
     (.attach ui-server stats-storage)
     net))
 
-(defn test-net
+(defn evaluate
   ([net test-iterator]
    (let [eval (.evaluateRegression net test-iterator)]
      (println "Evaluated net")
@@ -66,52 +66,38 @@
          pom1 (vec (map #(vector %1 %2) pred1 pod2))
          ev (Evaluation. ) ]
 
-     (println "MAPE")
-
      (let [ape (map #(absulute-percent-error %) pom1)
            uku (count ape)
            sumape (apply + (map double ape))]
        (/ sumape uku))
     )))
 
-(defn net-predict
+(defn predict
   ([net normalizer test-data]
    (let [test-iterator (ListDataSetIterator. (.asList test-data))
          predicted (.output net test-iterator)
          - (.revertLabels normalizer predicted)
-         pred1 (map #(double %) predicted)]
-
-     (println "Predicted ...")
-      (-> pred1)
-     )))
+         pred (map #(double %) predicted)]
+     pred)))
 
 (defn init-network
   [net]
   (println "Initializing net...")
   (.init net)
   (println "Initialized net")
-
   (set-ui net)
-  (println "UI set")
-  )
+  (println "UI set"))
 
 (defn train-network [net train-data test-data normalizer num-epochs]
-  (let [train-data-itr (ListDataSetIterator. (.asList train-data))
-        test-copy      (.copy test-data)
-        test-data-itr (ListDataSetIterator. (.asList test-data))
-        ready-for-more true]
+  (let [train-data-itr (ListDataSetIterator. (.asList train-data))]
 
     (doseq [n (range 0 num-epochs)]
       (.reset train-data-itr)
-      (println "test-iterator reset")
       (.fit net train-data-itr)
-      (println (evaluate-mape net normalizer test-data))
-      )
+      (println (evaluate-mape net normalizer test-data)))
 
     (println "Trained net")
-
-    (evaluate-mape net normalizer test-data)
-    ))
+    (evaluate-mape net normalizer test-data)))
 
 (defn save-network
   [net filename]

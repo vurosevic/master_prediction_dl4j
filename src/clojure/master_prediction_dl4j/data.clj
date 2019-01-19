@@ -78,8 +78,7 @@
         output-row (indarray [0])
         output-ds (DataSet. input-row output-row)
         - (.transform normalizer output-ds)]
-    output-ds
-    ))
+    output-ds))
 
 (-> test-ds)
 
