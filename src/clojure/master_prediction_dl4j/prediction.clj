@@ -25,16 +25,6 @@
            [org.nd4j.linalg.dataset.api.iterator DataSetIterator]
            [org.nd4j.linalg.dataset.api MultiDataSet]))
 
-;;(def input-num 64)
-;;(def output-num 1)
-;;(def batch-size 128)
-;;(def num-epochs 10)
-;;(def rng-seed 123)
-
-;;(set! NeuralNet/momentum 0.9)
-;;(set! NeuralNet/learning_rate 1.5E-3)
-;;(def net (MultiLayerNetwork. (NeuralNet/getNetConfiguration)))
-
 (defn set-ui [net]
   (let [ui-server (UIServer/getInstance)
         stats-storage (InMemoryStatsStorage.)]
@@ -113,7 +103,7 @@
       (.reset train-data-itr)
       (.fit net train-data-itr)
       (println (str n " , " (evaluate-mape net normalizer test-data)))
-      (data/write-file "konvergencijadl4j_minibatch_test.csv" (str n "," (evaluate-mape net normalizer test-data) "\n"))
+      ;;(data/write-file "konvergencijadl4j_minibatch_test.csv" (str n "," (evaluate-mape net normalizer test-data) "\n"))
       )
 
     (println "Trained net")
@@ -130,20 +120,5 @@
   [filename]
   (ModelSerializer/restoreMultiLayerNetwork (str "resources/" filename))
   )
-
-
-;;(save-network net "dl4j_nn122")
-
-;;(init-network net)
-;;(evaluate-mape net data/normalizer data/test-data)
-;;(net-predict net data/normalizer (data/prepare-input-vector data/input-test data/normalizer))
-;;(train-network net data/train-data data/test-data data/normalizer)
-
-;;(def net2 (load-network "dl4j_nn140"))
-;;(evaluate-mape net2 data/normalizer data/test-data)
-;;(net-predict net2 data/normalizer (data/prepare-input-vector data/input-test data/normalizer))
-;;(train-network net2 data/train-data data/test-data data/normalizer)
-
-
 
 
