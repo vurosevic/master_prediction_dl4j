@@ -64,7 +64,7 @@
     )))
 
 (defn create-predict-file
-  ([net normalizer test-data]
+  ([net normalizer test-data filename]
    (let [test-copy (.copy test-data)
          test-iterator (ListDataSetIterator. (.asList test-data))
          predicted (.output net test-iterator)
@@ -76,7 +76,7 @@
          ev (Evaluation.)]
 
       (doseq [x (range (count pod))]
-            (data/write-file "predict-dl4j-10-100200200100.csv" (str x "," (nth pod x) "," (nth pred x) "\n"))
+            (data/write-file filename (str x "," (nth pod x) "," (nth pred x) "\n"))
           )
      )))
 

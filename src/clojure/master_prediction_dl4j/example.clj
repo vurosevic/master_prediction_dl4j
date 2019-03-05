@@ -22,7 +22,7 @@
 (prediction/predict net data/normalizer (data/prepare-input-vector data/input-test data/normalizer))
 
 ;; prepare file for drawing diagram of convergence
-(prediction/create-predict-file net data/normalizer data/test-data)
+(prediction/create-predict-file net data/normalizer data/test-data "predict-dl4j-10-100.csv")
 
 ;; training benchmark
 (criterium.core/with-progress-reporting
