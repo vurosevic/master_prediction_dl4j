@@ -40,24 +40,11 @@
     (def test-data (.getTest testAndTrain)))
   )
 
-;;(def allData-iterator (RecordReaderDataSetIterator.
-;;                        all-data-reader 2647 64 64 true))
-
-;;(def allData (DataSet.))
-;;(def allData (.next allData-iterator))
-
-;;(def testAndTrain (.splitTestAndTrain allData 0.7))
-
-;;(def train-data (.getTrain testAndTrain))
-;;(def test-data (.getTest testAndTrain))
 (def normalizer (NormalizerMinMaxScaler. 0 1))
 (.fitLabel normalizer true)
 (.fit normalizer train-data)
 (.transform normalizer train-data)
 (.transform normalizer test-data)
-
-;;(-> allData)
-;;(-> test-data)
 
 
 (def input-test [2010 9 25 7 0 3424 3060 2861 2772 2761 2971 3435 4015 4195 4261 4215
@@ -65,7 +52,6 @@
                  4956 93622 14 19.5 25 15.96 14 19.27 25 15.82 23.27 48.95 1011.73 3452
                  3104 2886 2794 2757 2890 3084 3617 4017 28601 17 18.59090909 22 17.80976667
                  17 18.59090909 22 17.62029836 28.68181818 68 1002.318182])
-
 
 (defn indarray
   [data]
@@ -84,8 +70,6 @@
         output-ds (DataSet. input-row output-row)
         - (.transform normalizer output-ds)]
     output-ds))
-
-(-> test-ds)
 
 (prepare-input-vector input-test normalizer)
 
