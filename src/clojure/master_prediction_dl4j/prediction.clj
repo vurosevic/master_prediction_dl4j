@@ -1,4 +1,5 @@
-(ns master-prediction-dl4j.prediction
+(ns ^{:author "Vladimir Urosevic"}
+  master-prediction-dl4j.prediction
   (:require [master-prediction-dl4j.data :as data]
             )
   (:import [org.deeplearning4j.nn.conf NeuralNetConfiguration NeuralNetConfiguration$Builder Updater]
@@ -61,16 +62,33 @@
          predicted (.output net test-iterator)
          - (.revertLabels normalizer predicted)
          - (.revertLabels normalizer (.getLabels test-copy))
-         pod2 (map #(double %) (.getLabels test-copy))
-         pred1 (map #(double %) predicted)
-         pom1 (vec (map #(vector %1 %2) pred1 pod2))
+         pod (map #(double %) (.getLabels test-copy))
+         pred (map #(double %) predicted)
+         pom (vec (map #(vector %1 %2) pred pod))
          ev (Evaluation. ) ]
 
-     (let [ape (map #(absulute-percent-error %) pom1)
+     (let [ape (map #(absulute-percent-error %) pom)
            uku (count ape)
            sumape (apply + (map double ape))]
        (/ sumape uku))
     )))
+
+(defn create-predict-file
+  ([net normalizer test-data]
+   (let [test-copy (.copy test-data)
+         test-iterator (ListDataSetIterator. (.asList test-data))
+         predicted (.output net test-iterator)
+         - (.revertLabels normalizer predicted)
+         - (.revertLabels normalizer (.getLabels test-copy))
+         pod (map #(double %) (.getLabels test-copy))
+         pred (map #(double %) predicted)
+         pom (vec (map #(vector %1 %2) pred pod))
+         ev (Evaluation.)]
+
+      (doseq [x (range (count pod))]
+            (data/write-file "predict-dl4j-10-100200200100.csv" (str x "," (nth pod x) "," (nth pred x) "\n"))
+          )
+     )))
 
 (defn predict
   ([net normalizer test-data]
@@ -88,16 +106,19 @@
   (set-ui net)
   (println "UI set"))
 
-(defn train-network [net train-data test-data normalizer num-epochs]
-  (let [train-data-itr (ListDataSetIterator. (.asList train-data))]
+(defn train-network [net train-data test-data normalizer num-epochs mini-batch-size]
+  (let [train-data-itr (ListDataSetIterator. (.asList train-data) mini-batch-size)]
 
     (doseq [n (range 0 num-epochs)]
       (.reset train-data-itr)
       (.fit net train-data-itr)
-      (println (evaluate-mape net normalizer test-data)))
+      (println (str n " , " (evaluate-mape net normalizer test-data)))
+      (data/write-file "konvergencijadl4j_minibatch_test.csv" (str n "," (evaluate-mape net normalizer test-data) "\n"))
+      )
 
     (println "Trained net")
-    (evaluate-mape net normalizer test-data)))
+    (evaluate-mape net normalizer test-data)
+    ))
 
 (defn save-network
   [net filename]

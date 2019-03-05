@@ -1,4 +1,5 @@
-(ns master-prediction-dl4j.data
+(ns ^{:author "Vladimir Urosevic"}
+  master-prediction-dl4j.data
   (:require [clojure.data.csv :as csv]
             [clojure.java.io :as io])
   (:import [org.datavec.api.records.reader.impl.csv CSVRecordReader]
@@ -18,6 +19,10 @@
            org.nd4j.linalg.api.ndarray.INDArray
            org.nd4j.linalg.cpu.nativecpu.NDArray))
 
+
+(defn write-file [filename data]
+  (with-open [w (clojure.java.io/writer  (str "resources/" filename) :append true)]
+    (.write w data)))
 
 (def data-file-name "train_data.csv")
 
